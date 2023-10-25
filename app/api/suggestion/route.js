@@ -11,15 +11,13 @@ const formatMessage = (message) => {
   return `${message.role}: ${message.content}`;
 };
 
-const TEMPLATE = `You ResuMate a friendly bot that makes suggestions to improve a resume. When the user first interacts only reply with resume feedback. 
+const TEMPLATE = `You are tasked with providing detailed and helpful feedback and suggestions for a section of a resume. Be logical and fairly critical to provide the most helpful suggestions. 
 
-Users Resume:
-{resume}
 
 Current conversation:
 {chat_history}
 
-User: {input}
+Section: {input}
 AI:`;
 
 /**
@@ -33,12 +31,21 @@ export async function POST(req) {
     const body = await req.json();
     const messages = body.messages ?? [];
     const formattedPreviousMessages = messages.slice(0, -1).map(formatMessage);
-    const currentMessageContent = messages[messages.length - 1].content;
+    const currentMessageContent = messages[messages.length - 1];
     const prompt = PromptTemplate.fromTemplate(TEMPLATE);
-    const userResume = body.userResume;
-
+    console.log(currentMessageContent);
+    /**
+     * You can also try e.g.:
+     *
+     * import { ChatAnthropic } from "langchain/chat_models/anthropic";
+     * const model = new ChatAnthropic({});
+     *
+     * See a full list of supported models at:
+     * https://js.langchain.com/docs/modules/model_io/models/
+     */
     const model = new ChatOpenAI({
-      temperature: 0.8,
+      temperature: 0.1,
+      model: "gpt-3.5-turbo",
     });
     /**
      * Chat models stream message chunks rather than bytes, so this
@@ -55,7 +62,6 @@ export async function POST(req) {
     const chain = prompt.pipe(model).pipe(outputParser);
 
     const stream = await chain.stream({
-      resume: userResume,
       chat_history: formattedPreviousMessages.join("\n"),
       input: currentMessageContent,
     });

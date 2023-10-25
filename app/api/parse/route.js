@@ -11,7 +11,12 @@ const formatMessage = (message) => {
   return `${message.role}: ${message.content}`;
 };
 
-const TEMPLATE = `You are a resume parser. parse the following resume into clearly marked sections. for each section format like so: SECTION: SECTION-NAME, SECTION-CONTENT
+const TEMPLATE = `You are tasked with parsing a resume. Your objective is to divide the provided resume into distinct sections and retain the original formatting. The output format for each section should be: 
+
+SECTION: [SECTION-NAME]
+SECTION-CONTENT: [SECTION-CONTENT]
+
+Common Section Names: Experience, Skills, Summary, Certifications, Education, etc..
 
 Current conversation:
 {chat_history}
