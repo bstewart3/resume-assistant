@@ -5,8 +5,10 @@ import mammoth from "mammoth";
 import * as pdfjs from "pdfjs-dist";
 
 import { useState } from "react";
+
 import FileUploader from "./FileUploader";
 import SectionWithSuggestion from "./SectionWithSuggestion";
+import Spinner from "./Spinner";
 
 async function parseFile(file) {
   const fileType = file.type;
@@ -60,6 +62,7 @@ async function parseFile(file) {
 export default function Chat() {
   const [resume, setResume] = useState("");
   const [sections, setSections] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const chatOptions = {
     api: "/api/chat", // endpoint
@@ -83,6 +86,7 @@ export default function Chat() {
 
   const handleUpdate = async (file) => {
     try {
+      setIsLoading(true);
       const content = await parseFile(file);
       console.log(content);
       setResume(content);
@@ -116,41 +120,34 @@ export default function Chat() {
     } catch (error) {
       console.error("Error parsing file:", error);
       // Handle the error appropriately in your UI
+    } finally {
+      setIsLoading(false); // End loading
     }
   };
 
   return (
-    <div className="flex flex-col  w-full  p-4">
-      {/* Resume Text Container */}
-      {/* <div className="w-full md:w-1/2 md:pl-2 overflow-y-auto">
-        <pre className="whitespace-pre-wrap">{resume}</pre>
-      </div> */}
-      {/* Chat Messages Container */}
+    <div className="flex flex-col w-full p-8  rounded-md shadow-md">
       <div className="flex flex-col w-full ">
-        {resume === "" ? <FileUploader onUpdate={handleUpdate} /> : ""}
-        <div className="sections-container">
-          {sections.map((section, index) => (
-            <SectionWithSuggestion key={index} {...section} />
-          ))}
-        </div>
-        {/* <div className="flex flex-col h-full overflow-y-auto mb-4">
-          {messages.length > 0
-            ? messages.map((m) => (
-                <div key={m.id} className="whitespace-pre-wrap mb-2">
-                  {m.role === "user" ? "User: " : "AI: "}
-                  {m.content}
-                </div>
-              ))
-            : null}
-        </div>
-        <form onSubmit={handleSubmit} className="mt-auto">
-          <input
-            className="w-full border border-gray-300 rounded mb-8 p-2"
-            value={input}
-            placeholder="Say something..."
-            onChange={handleInputChange}
+        {resume === "" ? (
+          <FileUploader
+            onUpdate={handleUpdate}
+            className=" hover:bg-blue-600 text-white p-2 rounded-md shadow-md"
           />
-        </form> */}
+        ) : (
+          ""
+        )}
+        {isLoading ? (
+          <div className="flex justify-center items-center h-screen">
+            <Spinner />
+            <h3 className="ml-4 text-gray-600">Loading Resume Sections...</h3>
+          </div>
+        ) : (
+          <div className="sections-container">
+            {sections.map((section, index) => (
+              <SectionWithSuggestion key={index} {...section} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
