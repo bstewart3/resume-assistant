@@ -6,6 +6,8 @@ import * as pdfjs from "pdfjs-dist";
 
 import { useState } from "react";
 
+import Image from "next/image";
+import reswiz from "../public/reswiz.png";
 import FileUploader from "./FileUploader";
 import SectionWithSuggestion from "./SectionWithSuggestion";
 import Spinner from "./Spinner";
@@ -126,23 +128,31 @@ export default function Chat() {
   };
 
   return (
-    <div className="flex flex-col w-full  p-8  rounded-md shadow-md">
-      <div className="flex flex-col w-full ">
-        {resume === "" ? (
-          <FileUploader
-            onUpdate={handleUpdate}
-            className=" hover:bg-blue-600 text-white p-2 rounded-md shadow-md"
-          />
-        ) : (
-          ""
+    <div className="flex flex-col w-full p-8 bg-white rounded-lg shadow-lg">
+      <div className="flex flex-col w-full items-center space-y-4">
+        {resume === "" && (
+          <>
+            <Image
+              src={reswiz}
+              width={500}
+              height={500}
+              alt="Picture of the author"
+              className="rounded-md"
+            />
+            <FileUploader
+              onUpdate={handleUpdate}
+              className="w-full text-center bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md transition duration-300 ease-in-out"
+            />
+          </>
         )}
+
         {isLoading ? (
-          <div className="flex justify-center items-center h-screen">
+          <div className="flex justify-center items-center h-screen space-x-4">
             <Spinner />
-            <h3 className="ml-4 text-gray-600">Loading Resume Sections...</h3>
+            <h3 className="text-gray-600">Loading Resume Sections...</h3>
           </div>
         ) : (
-          <div className="sections-container">
+          <div className="sections-container space-y-4">
             {sections.map((section, index) => (
               <SectionWithSuggestion key={index} {...section} />
             ))}
