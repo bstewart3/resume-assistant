@@ -11,14 +11,13 @@ const formatMessage = (message) => {
   return `${message.role}: ${message.content}`;
 };
 
-const TEMPLATE = `You are tasked with providing detailed and helpful feedback and suggestions for a section of a resume. Be logical and fairly critical to provide the most helpful suggestions. 
-
-
+const TEMPLATE = `You are tasked with providing detailed and helpful feedback and suggestions for a section of a resume. Be logical and provide the most helpful suggestions possible. Only provide nec
+Keep responses to 100 words. Use bullets as necessary.
 Current conversation:
 {chat_history}
 
 Section: {input}
-AI:`;
+`;
 
 /**
  * This handler initializes and calls a simple chain with a prompt,

@@ -126,7 +126,7 @@ export default function Chat() {
   };
 
   return (
-    <div className="flex flex-col w-full p-8  rounded-md shadow-md">
+    <div className="flex flex-col w-full  p-8  rounded-md shadow-md">
       <div className="flex flex-col w-full ">
         {resume === "" ? (
           <FileUploader
